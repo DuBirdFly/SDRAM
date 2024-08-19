@@ -1,18 +1,18 @@
 module sdr_wrapper(
-    IfSDR ifSDR
+    IfSdr ifSdr
 );
 
     sdr u_sdr(
-        .Clk   ( ifSDR.clk   ),
-        .Cke   ( ifSDR.cke   ),
-        .Cs_n  ( ifSDR.cs_n  ),
-        .Ras_n ( ifSDR.ras_n ),
-        .Cas_n ( ifSDR.cas_n ),
-        .We_n  ( ifSDR.we_n  ),
-        .Addr  ( ifSDR.addr  ),
-        .Ba    ( ifSDR.ba    ),
-        .Dq    ( ifSDR.dq    ),
-        .Dqm   ( ifSDR.dqm   ),
+        .Clk   ( ifSdr.clk   ),
+        .Cke   ( ifSdr.cke   ),
+        .Cs_n  ( ifSdr.cs_n  ),
+        .Ras_n ( ifSdr.ras_n ),
+        .Cas_n ( ifSdr.cas_n ),
+        .We_n  ( ifSdr.we_n  ),
+        .Addr  ( ifSdr.addr  ),
+        .Ba    ( ifSdr.ba    ),
+        .Dq    ( ifSdr.dq    ),
+        .Dqm   ( ifSdr.dqm   ),
     );
 
 endmodule

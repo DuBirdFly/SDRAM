@@ -1,4 +1,4 @@
-interface IfSDR(
+interface IfSdr(
     input logic clk
 );
 
