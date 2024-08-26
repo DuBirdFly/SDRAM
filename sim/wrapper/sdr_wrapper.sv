@@ -12,7 +12,7 @@ module sdr_wrapper(
         .Addr  ( ifSdr.addr  ),
         .Ba    ( ifSdr.ba    ),
         .Dq    ( ifSdr.dq    ),
-        .Dqm   ( ifSdr.dqm   ),
+        .Dqm   ( ifSdr.dqm   )
     );
 
 endmodule

@@ -2,5 +2,9 @@ prj/modelsim_example/*
 !prj/modelsim_example/do
 !prj/modelsim_example/filelist
 
+prj/modelsim_uvm/*
+!prj/modelsim_uvm/do
+!prj/modelsim_uvm/filelist
+
 .vscode
 bak
