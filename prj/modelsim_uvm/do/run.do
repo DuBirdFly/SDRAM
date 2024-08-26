@@ -16,6 +16,6 @@ view signals
 
 run 0ns
 
-# do {do/wave.do}
+do {do/wave.do}
 
 run -all

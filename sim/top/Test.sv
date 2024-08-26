@@ -7,6 +7,7 @@ class Test extends uvm_test;
 
     /* Declare Object Handles */
     virtual IfSdr vifSdr;
+    Env env = Env::type_id::create("env", this);
 
     function new(string name = "Test", uvm_component parent);
         super.new(name, parent);

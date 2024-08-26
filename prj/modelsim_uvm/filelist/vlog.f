@@ -21,9 +21,13 @@ D:/Codes/Modelsim/Modelsim_10_7/verilog_src/uvm-1.1d/src/uvm_pkg.sv
 
 //* Testbench Files *************************************
 +incdir+../../sim/env
-+incdir+../../sim/sdr
 +incdir+../../sim/top
 +incdir+../../sim/wrapper
+
++incdir+../../sim/sdr
++incdir+../../sim/sdr/agent
++incdir+../../sim/sdr/env
++incdir+../../sim/sdr/seq
 
 ../../sim/top/Top.sv
 

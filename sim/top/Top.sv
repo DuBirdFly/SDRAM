@@ -4,10 +4,10 @@ import uvm_pkg::*;
 // 时钟有可能是 7.5ns (133 MHz), 也就是 3.75ns 翻转一次, 所以 1ps 的时间精度是需要的
 `timescale 1ps/1ps
 
-`include "sdr_define.sv"
-`include "ifSdr.sv"
+`include "sdr_include.svh"
 `include "sdr_wrapper.sv"
 
+`include "Env.sv"
 `include "Test.sv"
 
 module Top;
@@ -22,6 +22,7 @@ module Top;
 
     initial begin: uvm_config_db_interface
         uvm_config_db#(virtual IfSdr)::set(null, "uvm_test_top", "vifSdr", ifSdr);
+        uvm_config_db#(virtual IfSdr)::set(null, "uvm_test_top.env.sdrMstrEnv.sdrMstrAgt.sdrMstrChn", "vifSdr", ifSdr);
     end
 
     initial begin
