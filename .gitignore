@@ -1,6 +1,6 @@
-prj/modelsim/*
-!prj/modelsim/do
-!prj/modelsim/filelist
+prj/modelsim_example/*
+!prj/modelsim_example/do
+!prj/modelsim_example/filelist
 
 .vscode
 bak
