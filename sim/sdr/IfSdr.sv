@@ -15,7 +15,7 @@ interface IfSdr(
     logic [`VIP_SDR_DM_WIDTH   - 1:0]   dqm;
 
     clocking drv_cb @(posedge clk);
-        default input #1000 output #1000;
+        default input #1 output #1;
         output cke;
         output cs_n;
         output ras_n, cas_n, we_n;
@@ -26,7 +26,7 @@ interface IfSdr(
     endclocking
 
     clocking mon_cb @(posedge clk);
-        default input #1000 output #1000;
+        default input #1 output #1;
         input cke;
         input cs_n;
         input ras_n, cas_n, we_n;

@@ -1,8 +1,8 @@
 import uvm_pkg::*;
 `include "uvm_macros.svh"
 
-// 时钟有可能是 7.5ns (133 MHz), 也就是 3.75ns 翻转一次, 所以 1ps 的时间精度是需要的
-`timescale 1ps/1ps
+// 时钟有可能是 7.5ns (133 MHz), 也就是 3.75ns 翻转一次
+`timescale 1ns/1ps
 
 `include "sdr_include.svh"
 `include "sdr_wrapper.sv"
@@ -12,7 +12,7 @@ import uvm_pkg::*;
 
 module Top;
 
-    localparam CLK_PERIOD = 7500; // 133 MHz
+    localparam CLK_PERIOD = 7.5; // 133 MHz
     bit clk;
     always #(CLK_PERIOD/2) clk = ~clk;
 

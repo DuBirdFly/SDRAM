@@ -8,6 +8,7 @@ class Test extends uvm_test;
     /* Declare Object Handles */
     virtual IfSdr vifSdr;
     Env env = Env::type_id::create("env", this);
+    SdrMstrSeq sdrMstrSeq = SdrMstrSeq::type_id::create("sdrMstrSeq");
 
     function new(string name = "Test", uvm_component parent);
         super.new(name, parent);
@@ -16,8 +17,8 @@ class Test extends uvm_test;
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
 
-        //!set_timeout 不支持单位, 只支持数字 (32 bit), 其单位为 timescale 的单位
-        uvm_top.set_timeout(5_000_000, 1);  // 5_000_000 ps = 5 us
+        //!set_timeout 不支持单位, 只支持 32 bit (4_294_967_295), 其单位为 timescale 的精度 (1ns/ps 则为 ps)
+        uvm_top.set_timeout(50_000_000, 1); // 50_000_000 ps = 50_000 ns = 50 us
 
         /* Override */
 
@@ -39,6 +40,8 @@ class Test extends uvm_test;
 
     virtual task run_phase(uvm_phase phase);
         phase.raise_objection(this);
+
+        sdrMstrSeq.start(env.sdrMstrEnv.sdrMstrAgt.sdrMstrSqr);
 
         #1us;
 
