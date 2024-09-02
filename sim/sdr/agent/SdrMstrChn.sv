@@ -9,6 +9,7 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
 
     /* Declare Object Handles */
     virtual IfSdr vifSdr;
+    virtual IfUser vifUser;
 
     function new(string name = "SdrMstrChn", uvm_component parent);
         super.new(name, parent);
@@ -18,7 +19,9 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
         super.build_phase(phase);
         /* uvm_config_db#(<type>)::get(<uvm_component>, <"inst_name">, <"field_name">, <value>); */
         if (!uvm_config_db#(virtual IfSdr)::get(this, "", "vifSdr", vifSdr))
-            `uvm_fatal("NOVIF", {"\n    --> Virtual interface must be set for: ", get_full_name()})
+            `uvm_fatal("NOVIF", {"\n    --> Virtual-interface must be set for: ", get_full_name()})
+        if (!uvm_config_db#(virtual IfUser)::get(this, "", "vifUser", vifUser))
+            `uvm_fatal("NOVIF", {"\n    --> Virtual-interface must be set for: ", get_full_name()})
         /* uvm_config_db#(<type>)::set(<uvm_component>, <"inst_name">, <"field_name">, <value>); */
     endfunction
 
@@ -72,6 +75,7 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
     endfunction
 
     virtual task CMD_NOP();
+        // vifUser.drv_cb.SDR_STATE <= S_IDLE;
         vifSdr.drv_cb.cke   <= 1'b1;
         this.set_cmd(4'b0111);
         vifSdr.drv_cb.addr  <= 'x;
@@ -82,6 +86,7 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
     endtask
 
     virtual task CMD_LMR(bit [`VIP_SDR_ADDR_WIDTH - 1:0] op_code);
+        vifUser.drv_cb.SDR_STATE <= S_LMR;
         vifSdr.drv_cb.cke   <= 1'b1;
         this.set_cmd(4'b0000);
         vifSdr.drv_cb.addr  <= op_code;
@@ -95,12 +100,13 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
     endtask
 
     virtual task CMD_PRECHARGE(string sub_type = "all", bit [`VIP_SDR_BA_WIDTH - 1:0] bank = 0);
+        vifUser.drv_cb.SDR_STATE <= S_PRE;
         vifSdr.drv_cb.cke   <= 1'b1;
         this.set_cmd(4'b0010);
         case (sub_type)
-            "all"       : vifSdr.drv_cb.addr <= (1'b1 << 10);    // A10 = 1
-            "selected"  : vifSdr.drv_cb.addr <= '0;              // A10 = 0
-            default     : `uvm_error(get_type_name(), $sformatf("[task CMD_PRECHARGE] Unknown Type: %s", sub_type))
+            "all"   : vifSdr.drv_cb.addr <= (1'b1 << 10);    // A10 = 1
+            "sel"   : vifSdr.drv_cb.addr <= '0;              // A10 = 0
+            default : `uvm_error(get_type_name(), $sformatf("[task CMD_PRECHARGE] Unknown Type: %s", sub_type))
         endcase
         vifSdr.drv_cb.ba    <= bank;
         vifSdr.drv_cb.dqm   <= '0;
@@ -109,6 +115,7 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
     endtask
 
     virtual task CMD_REFRESH(string sub_type = "auto");
+        vifUser.drv_cb.SDR_STATE <= S_REF;
         case (sub_type)
             "auto"      : vifSdr.drv_cb.cke <= 1'b1;
             "self"      : vifSdr.drv_cb.cke <= 1'b0;
