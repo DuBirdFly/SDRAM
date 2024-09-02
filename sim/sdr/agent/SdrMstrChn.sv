@@ -68,16 +68,18 @@ class SdrMstrChn extends uvm_driver #(TrSdr);
         #100ns @vifSdr.drv_cb;  // actually, need to delay at least 100μs
 
         this.CMD_PRECHARGE("all");
-        repeat (tRP / tCK + 1) this.CMD_NOP();  // tRP (ns), Precharge command period
+        repeat ($ceil(tRP / tCK)) this.CMD_NOP();  // tRP (ns), Precharge command period
 
         this.CMD_REFRESH("auto");
-        repeat (tRFC / tCK + 1) this.CMD_NOP(); // tRFC (ns), Refresh to Refresh Command interval time
+        repeat ($ceil(tRFC / tCK)) this.CMD_NOP(); // tRFC (ns), Refresh to Refresh Command interval time
 
         this.CMD_REFRESH("auto");
-        repeat (tRFC / tCK + 1) this.CMD_NOP(); // tRFC (ns), Refresh to Refresh Command interval time
+        repeat ($ceil(tRFC / tCK)) this.CMD_NOP(); // tRFC (ns), Refresh to Refresh Command interval time
 
         this.CMD_LMR({SDR_STATE.CL, SDR_STATE.BT, SDR_STATE.BL});
         repeat (tMRD) this.CMD_NOP();   // tMRD (tCK), Load Mode Register command cycle time
+
+        repeat (10) this.CMD_NOP();     // extra NOPs
     endtask
 
     function void set_cmd(bit [3:0] cmd);
