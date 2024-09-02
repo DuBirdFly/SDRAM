@@ -26,7 +26,7 @@ module Top;
     end
 
     initial begin
-        $timeformat(-9, 3, "ns", 12);   // 时间精度, 小数点精度, 字符串后缀, 字符串长度
+        $timeformat(-9, 1, "ns", 9);   // 时间精度, 小数点精度, 字符串后缀, 字符串长度
         run_test("Test");
     end
 
