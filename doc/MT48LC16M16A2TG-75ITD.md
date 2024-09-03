@@ -56,5 +56,82 @@ More than two AUTO REFRESH commands can be issued in the sequence. After steps 9
 注意：
 在序列中可以发出两个以上的 AUTO REFRESH 命令。在步骤 9 和 10 完成后，重复它们，直到达到所需的 AUTO REFRESH + tRFC 循环次数。
 
-![初始化时序图](./img/initialization.png)
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725378390040.png" alt="Figure 18" style="width: 1000px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 18: Initialize and Load Mode Register </p>
+</div>
+
+## WRITE Operation
+
+WRITE bursts are initiated with a WRITE command, and the starting column and bank addresses are provided with the WRITE command and auto precharge is either enabled or disabled for that access. If auto precharge is enabled, the row being accessed is precharged at the completion of the burst.
+
+WRITE 突发由 WRITE 命令启动，WRITE 命令提供起始列（col）和存储体地址（ba），并且针对该访问启用或禁用自动预充电。如果启用自动预充电，则在突发完成时对所访问的行进行预充电。
+
+During WRITE bursts, the first valid data-in element is registered coincident with the WRITE command. Subsequent data elements are registered on each successive positive clock edge. Upon completion of a fixed-length burst, assuming no other commands have been initiated, the DQ will remain at High-Z and any additional input data will be ignored (Figure 31). 
+
+在 WRITE 突发期间，第一个有效的数据输入元素与 WRITE 命令同时注册。随后的数据元素在每个连续的正时钟边沿上注册。在完成固定长度的突发后，假设没有启动其他命令，DQ 保持在高阻态，任何额外的输入数据都将被忽略（Figure 31）。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725378567256.png" alt="Figure 31" style="width: 450px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 31: WRITE Burst </p>
+</div>
+
+A continuous page burst continues until terminated; at the end of the page, it wraps to column 0 and continues.
+
+“连续页突发” 将持续到 “terminate” 指令的发出；在页面末尾，它将回环至列 0 并继续。
+
+Data for any WRITE burst can be truncated with a subsequent WRITE command, and data for a fixed-length WRITE burst can be followed immediately by data for a WRITE command. The new WRITE command can be issued on any clock following the previous WRITE command, and the data provided coincident with the new command applies to the new command (see Figure 32). Data n+1 is either the last of a burst of two or the last desired data element of a longer burst
+
+任何 WRITE 突发的数据都可以通过后续的 WRITE 命令截断，固定长度的 WRITE 突发的数据可以紧接着后续的 WRITE 命令。新的 WRITE 命令可以在前一个 WRITE 命令后的任何时钟上发出，并且与新命令同时提供的数据适用于新命令（见 Figure 32）。数据 n+1 是两个突发的最后一个或更长突发的最后一个所需数据元素。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725381765195.png" alt="Figure 32" style="width: 500px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 32: WRITE-to-WRITE </p>
+</div>
+
+SDRAM devices use a pipelined architecture and therefore do not require the 2n rule associated with a prefetch architecture. A WRITE command can be initiated on any clock cycle following a previous WRITE command. Full-speed random write accesses within a page can be performed to the same bank, as shown in Figure 33 (page 61), or each subsequent WRITE can be performed to a different bank.
+
+SDRAM 设备使用流水线架构，因此不需要与预取架构相关的 2n 规则。可以在前一个 WRITE 命令之后的任何时钟周期上启动 WRITE 命令。可以对同一 bank 执行页面内的全速随机写访问，如 Figure 33 所示，或者每个后续的 WRITE 可以执行到不同的 bank。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725381326586.png" alt="Figure 33" style="width: 500px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 33: Random WRITE Cycles </p>
+</div>
+
+Data for any WRITE burst can be truncated with a subsequent READ command, and data for a fixed-length WRITE burst can be followed immediately by a READ command. After the READ command is registered, data input is ignored and WRITEs will not be executed (see Figure 34). Data n+1 is either the last of a burst of two or the last desired data element of a longer burst.
+
+任何 WRITE 突发的数据都可以用后续的 READ 命令截断，固定长度的 WRITE 突发的数据可以紧接着后续的 READ 命令。在READ 命令注册后，数据输入将被忽略，并且不会执行 WRITE 命令（见 Figure 34）。数据 n+1 要么是两个突发中的最后一个，要么是较长突发的最后一个所需数据元素。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725382019610.png" alt="Figure 34" style="width: 600px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 34: WRITE-to-READ </p>
+</div>
+
+Data for a fixed-length WRITE burst can be followed by or truncated with a PRECHARGE command to the same bank, provided that auto precharge was not activated. A continuous-page WRITE burst can be truncated with a PRECHARGE command to the same bank. The PRECHARGE command should be issued tWR after the clock edge at which the last desired input data element is registered. The auto precharge mode requires a tWR of at least one clock with time to complete, regardless of frequency
+
+如果未激活自动预充电，则固定长度 WRITE 突发的数据可以使用 PRECHARGE 命令紧跟/截断到同一 bank。连续页面 WRITE 突发可以使用 PRECHARGE 命令截断到同一存储体。应在最后一个所需输入数据元素注册的时钟沿之后 tWR 发出 PRECHARGE 命令。自动预充电模式需要至少一个时钟的 tWR 来完成，无论频率如何。
+
+In addition, when truncating a WRITE burst at high clock frequencies (tCK < 15ns), the DQM signal must be used to mask input data for the clock edge prior to and the clock edge coincident with the PRECHARGE command (see Figure 35). Data n+1 is either the last of a burst of two or the last desired data element of a longer burst. Following the PRECHARGE command, a subsequent command to the same bank cannot be issued until tRP is met.
+
+此外，在高时钟频率（tCK < 15ns）下截断 WRITE 突发时，必须使用 DQM 信号来屏蔽 PRECHARGE 命令之前的时钟边沿和与 PRECHARGE 命令一致的时钟边沿的输入数据（见 Figure 35）。数据 n+1 要么是两个突发中的最后一个，要么是较长突发的最后一个所需数据元素。在发出 PRECHARGE 命令后，不能在满足 tRP 之前发出到同一 bank 的后续命令。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725382917337.png" alt="Figure 35" style="width: 600px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 35: WRITE-to-PRECHARGE </p>
+</div>
+
+In the case of a fixed-length burst being executed to completion, a PRECHARGE command issued at the optimum time (as described above) provides the same operation that would result from the same fixed-length burst with auto precharge. The disadvantage of the PRECHARGE command is that it requires that the command and address buses be available at the appropriate time to issue the command. The advantage of the PRECHARGE command is that it can be used to truncate fixed-length bursts or continuous page bursts.
+
+在固定长度突发执行完成的情况下，“在最佳时间发出的 PRECHARGE 命令的操作（如上所述）” 与 “AUTO-PRECHARGE 突发所产生的操作（相同固定长度）” 是相同的。PRECHARGE 命令的缺点是它要求命令和地址总线在适当的时间可用才能发出命令。PRECHARGE 命令的优点是它可用于截断固定长度突发或连续页面突发。
+
+Fixed-length WRITE bursts can be truncated with the BURST TERMINATE command. When truncating a WRITE burst, the input data applied coincident with the BURST TERMINATE command is ignored. The last data written (provided that DQM is LOW at that time) will be the input data applied one clock previous to the BURST TERMINATE command. This is shown in Figure 36, where data n is the last desired data element of a longer burst.
+
+固定长度的 WRITE 突发可使用 BURST TERMINATE 命令截断。 截断 WRITE 突发时，与 BURST TERMINATE 命令同时使用的输入数据将被忽略。最后写入的数据（假设 DQM 当时为低电平）将是 BURST TERMINATE 命令之前一个时钟应用的输入数据（见 Figure 36），其中数据 n 是较长突发的最后一个所需数据元素。
+
+<div style="text-align: center;">
+  <img src="image/MT48LC16M16A2TG-75ITD/1725383599763.png" alt="Figure 36" style="width: 450px; height: auto;">
+  <p style="margin-top: 5px;"> Figure 36: Terminating a WRITE Burst </p>
+</div>
+
+
 
