@@ -17,10 +17,13 @@ class SdrMstrSeq extends uvm_sequence #(TrSdr);
     endtask
 
     virtual task case_run_0();
-        TrSdr trSdr;
-        `uvm_info(get_type_name(), "case_run_0", UVM_MEDIUM)
-        trSdr = TrSdr::type_id::create("trSdr");
+        TrSdr trSdr = TrSdr::type_id::create("trSdr");
+
         trSdr.SdrCmd = "INIT";
+        start_item(trSdr);
+        finish_item(trSdr);
+
+        trSdr.SdrCmd = "TEST_BASE";
         start_item(trSdr);
         finish_item(trSdr);
     endtask
