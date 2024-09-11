@@ -17,12 +17,13 @@ class SdrMstrSeq extends uvm_sequence #(TrSdr);
     endtask
 
     virtual task case_run_0();
-        TrSdr trSdr;
-        `uvm_info(get_type_name(), "case_run_0", UVM_MEDIUM)
-        trSdr = TrSdr::type_id::create("trSdr");
-        trSdr.SdrCmd = "INIT";
-        start_item(trSdr);
-        finish_item(trSdr);
+        TrSdr tr = TrSdr::type_id::create("tr");
+        tr.write = 1;
+        if (!tr.randomize() with {addr == {2'h3, 13'h1fff, 9'h000}; len == 7;})
+            `uvm_fatal(get_type_name(), "Randomize failed")
+        tr.calcu_addr();
+        start_item(tr);
+        finish_item(tr);
     endtask
 
 endclass
