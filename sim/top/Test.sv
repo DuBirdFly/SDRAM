@@ -18,7 +18,7 @@ class Test extends uvm_test;
         super.build_phase(phase);
 
         //!set_timeout 不支持单位, 只支持 32 bit (4_294_967_295), 其单位为 timescale 的精度 (1ns/ps 则为 ps)
-        uvm_top.set_timeout(50_000_000, 1); // 50_000_000 ps = 50_000 ns = 50 us
+        uvm_top.set_timeout(500_000_000, 1); // 500_000_000 ps = 500 us
 
         /* Override */
 
